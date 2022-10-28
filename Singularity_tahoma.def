@@ -23,6 +23,9 @@ Stage: spython-base
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 CUDA=11.1.1
 SINGULARITY_CUDA=11.1.1
+CUDA_V1=11
+CUDA_V2=1
+CUDA_V3=1
 # FROM directive resets ARGS, so we specify again (the value is retained if
 # previously set).
 
@@ -82,7 +85,8 @@ jaxlib==0.3.15+cuda11.cudnn805 \
 && mkdir -p /opt/conda/lib/python3.7/site-packages  \
 &&  cd /opt/conda/lib/python3.7/site-packages  \
 && patch -p0 < /app/alphafold/docker/openmm.patch  \
-&& apt-get -y purge cmake build-essential cuda-command-line-tools-11-1  \
+&& apt-get -y purge cmake build-essential cuda-command-line-tools-${CUDA_V1}-${CUDA_V2}  \
+libcudnn8 libcusolver-${CUDA_V1}-${CUDA_V2} libcublas-${CUDA_V1}-${CUDA_V2} libcufft-${CUDA_V1}-${CUDA_V2} \
 && apt-get -y autoremove && apt-get clean \
 && echo '/opt/conda size' `du -sh /opt/conda` \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100  \
@@ -96,7 +100,7 @@ jaxlib==0.3.15+cuda11.cudnn805 \
 mkdir -p /app/alphafold
 cd /app/alphafold
 echo '#!/bin/bash\n\
-ldconfig\n\
+#ldconfig\n\
 python /app/alphafold/run_alphafold.py "$@"' > /app/run_alphafold.sh \
 && chmod +x /app/run_alphafold.sh
 %environment
