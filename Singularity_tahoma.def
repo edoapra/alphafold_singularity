@@ -105,7 +105,7 @@ head /app/alphafold/docker/openmm.patch
 patch -p0 < /app/alphafold/docker/openmm.patch
 
 # size
-&& apt-get -y autoremove && apt-get clean \
+apt-get -y autoremove && apt-get clean \
 && echo '/opt/conda size' `du -sh /opt/conda` \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100
 
