@@ -63,6 +63,7 @@ jobs:
         python -m pip install --upgrade pip
         python -m pip install -r requirements.txt
         apptainer pull -F alphafold.sif ${{ env.tag }}:${{ env.date }}
+        apptainer exec ${{ env.tag }}:${{ env.date }} ldd /usr/bin/hhsearch ||true
         ALPHAFOLD_DIR=`pwd` python ./run_singularity.py --help || true
         echo 'exit code ' $?
         apptainer cache list -v
