@@ -38,7 +38,8 @@ jobs:
       run: |
         pwd
         ls -l
-        apptainer build --fakeroot alphafold.simg  Singularity.def
+        apptainer build --fakeroot alphafold.simg  Singularity_tahoma.def
+#        apptainer build --fakeroot alphafold.simg  Singularity.def
     - name: builddate
       id: build-date
       run: |
@@ -51,3 +52,9 @@ jobs:
         apptainer remote list
         apptainer push alphafold.simg ${{ env.tag }}:${{ env.date }}
         apptainer push alphafold.simg ${{ env.tag }}:latest
+    - name: test image with apptainer
+      run: |
+        pwd
+        ls -la
+        apptainer pull -F ${{ env.tag }}:${{ env.date }}
+        apptainer images
