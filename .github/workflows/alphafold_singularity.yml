@@ -57,4 +57,4 @@ jobs:
         pwd
         ls -la
         apptainer pull -F ${{ env.tag }}:${{ env.date }}
-        apptainer images
+        apptainer cache list -v
