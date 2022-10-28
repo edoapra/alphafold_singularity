@@ -2,8 +2,8 @@ Bootstrap: docker
 From: nvidia/cuda:11.1.1-cudnn8-runtime-ubuntu18.04
 Stage: spython-base
 
-%files
-. /app/alphafold
+#%files
+#. /app/alphafold
 %post
 # Copyright 2021 DeepMind Technologies Limited
 #
@@ -19,6 +19,11 @@ Stage: spython-base
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+%post
+#
+#https://sylabs.io/guides/3.6/user-guide/mpi.html
+CUDA=11.1.1
+SINGULARITY_CUDA=11.1.1
 # FROM directive resets ARGS, so we specify again (the value is retained if
 # previously set).
 
@@ -35,6 +40,13 @@ wget \
 && apt-get autoremove -y \
 && apt-get clean
 
+# Get code base
+mkdir -p /app
+ls -Rla /app
+git clone https://github.com/deepmind/alphafold.git /app/alphafold
+# Set perms so normal users can run
+chmod a+rx /app/alphafold/run_alphafold.py
+
 # Compile HHsuite from source.
 /bin/rm -rf /tmp/hh-suite \
 && git clone --branch v3.3.0 https://github.com/soedinglab/hh-suite.git /tmp/hh-suite \
@@ -43,8 +55,8 @@ wget \
 && cmake -DCMAKE_INSTALL_PREFIX=/opt/hhsuite .. \
 && make -j 4 && make install \
 && ln -s /opt/hhsuite/bin/* /usr/bin \
-&& cd / \
-&& /bin/rm -rf /tmp/hh-suite
+&& rm -rf /tmp/hh-suite \
+&& cd /tmp
 
 # Install Miniconda package manager.
 wget -q -P /tmp \
@@ -53,43 +65,51 @@ https://repo.anaconda.com/miniconda/Miniconda3-py37_4.12.0-Linux-x86_64.sh \
 && rm /tmp/Miniconda3-py37_4.12.0-Linux-x86_64.sh
 
 # Install conda packages.
-PATH="/opt/conda/bin:/usr/local/cuda-11.1/bin:$PATH"
+PATH="/opt/conda/bin:$PATH"
 conda install -qy conda==4.13.0 \
 && conda install -y -c conda-forge \
 openmm=7.5.1 \
-cudatoolkit==11.1.1 \
+cudatoolkit==${CUDA_VERSION} \
 pdbfixer \
 pip \
 python=3.7 \
 && conda clean --all --force-pkgs-dirs --yes
 
-### /bin/cp -r . /app/alphafold
-
 wget -q -P /app/alphafold/alphafold/common/ \
 https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
 
 # Install pip packages.
-# N.B. The URL specifies the list of jaxlib releases.
-pip3 install --upgrade pip  --no-cache-dir \
-&& pip3 install -r /app/alphafold/requirements.txt --no-cache-dir \
-&& pip3 install --upgrade --no-cache-dir \
+python -m pip install --upgrade pip --no-cache-dir \
+&& python -m pip install -r /app/alphafold/requirements.txt --no-cache-dir \
+&& python -m pip  install --upgrade --no-cache-dir \
 jax==0.3.17 \
 jaxlib==0.3.15+cuda11.cudnn805 \
 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 # Apply OpenMM patch.
+mkdir -p /opt/conda/lib/python3.7/site-packages
 cd /opt/conda/lib/python3.7/site-packages
 patch -p0 < /app/alphafold/docker/openmm.patch
 
 # Add SETUID bit to the ldconfig binary so that non-root users can run it.
 chmod u+s /sbin/ldconfig.real
 
+# We need to run `ldconfig` first to ensure GPUs are visible, due to some quirk
+# with Debian. See https://github.com/NVIDIA/nvidia-docker/issues/1399 for
+# details.
+# ENTRYPOINT does not support easily running multiple commands, so instead we
+# write a shell script to wrap them up.
+mkdir -p /app/alphafold
+cd /app/alphafold
+echo '#!/bin/bash\n\
+ldconfig\n\
+python /app/alphafold/run_alphafold.py "$@"' > /app/run_alphafold.sh \
+&& chmod +x /app/run_alphafold.sh
 %environment
-export PATH="/opt/conda/bin:/usr/local/cuda-11.1/bin:$PATH"
+export PATH="/opt/conda/bin:$PATH"
 %runscript
 cd /app/alphafold
-ldconfig
-exec python /app/alphafold/run_alphafold.py "$@"
-# %startscript
-# cd /app/alphafold
-# exec python /app/alphafold/run_alphafold.py "$@"
+exec /app/run_alphafold.sh "$@"
+%startscript
+cd /app/alphafold
+exec /app/run_alphafold.sh "$@"
