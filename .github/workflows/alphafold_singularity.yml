@@ -56,7 +56,13 @@ jobs:
       run: |
         pwd
         ls -la
-        apptainer pull -F ${{ env.tag }}:${{ env.date }}
-        apptainer ${{ env.tag }}:${{ env.date }} python /app/alphafold/run_alphafold.py --help || true
+        apt-get install -y python3.9-minimal python3-venv
+        python3.9 -m venv venv
+        source venv/bin/active
+        python -V
+        python -m pip install --upgrade pip
+        python -m pip install -r requirements.txt
+        apptainer pull -F alphafold.sif ${{ env.tag }}:${{ env.date }}
+        ALPHAFOLD_DIR=`pwd` python ./run_singularity.py --help || true
         echo 'exit code ' $?
         apptainer cache list -v
