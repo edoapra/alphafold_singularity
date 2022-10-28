@@ -65,7 +65,7 @@ jobs:
         apptainer pull -F alphafold.sif ${{ env.tag }}:${{ env.date }}
         apptainer exec ${{ env.tag }}:${{ env.date }} ldd /usr/bin/hhsearch 
         apptainer exec ${{ env.tag }}:${{ env.date }} /usr/bin/hhsearch -v || true
-        apptainer exec ${{ env.tag }}:${{ env.date }} ptxas -V 
+        apptainer exec ${{ env.tag }}:${{ env.date }} ptxas -V || true
         ALPHAFOLD_DIR=`pwd` python ./run_singularity.py --help 
         echo 'exit code ' $?
         apptainer cache list -v
