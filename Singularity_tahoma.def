@@ -32,7 +32,6 @@ SINGULARITY_CUDA=11.1.1
 build-essential \
 cmake \
 cuda-command-line-tools-11-1  \
-git \
 hmmer \
 kalign \
 tzdata \
@@ -42,11 +41,12 @@ wget \
 && apt-get clean \
 && mkdir -p /app  \
 && rm -rf /app/alphafold \
-&& wget -q https://github.com/deepmind/alphafold/tarball/main -O - | tar -xz \
-&& ln  -sf deepmind-alphafold-* alphafold \
+&& wget -q https://github.com/deepmind/alphafold/tarball/main -O - | tar -xz --directory /app  \
+&& ln  -sf /app/deepmind-alphafold-* /app/alphafold \
 && chmod a+rx /app/alphafold/run_alphafold.py \
 && rm -rf /tmp/hh-suite  \
-&& git clone --branch v3.3.0 https://github.com/soedinglab/hh-suite.git /tmp/hh-suite \
+&& wget -q https://github.com/soedinglab/hh-suite/tarball/v3.3.0  -O - | tar -xz --directory /tmp \
+&& ln -sf /tmp/soedinglab-hh-suite-* /tmp/hh-suite \
 && mkdir /tmp/hh-suite/build \
 && cd /tmp/hh-suite/build \
 && cmake -DCMAKE_INSTALL_PREFIX=/opt/hhsuite .. \
