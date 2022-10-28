@@ -1,0 +1,43 @@
+name: alphafold_apptainer
+
+on:
+  schedule:
+    - cron: '0 0 * * SUN'
+  repository_dispatch:
+    types: [backend_automation]
+  workflow_dispatch:
+  workflow_call:
+
+jobs:
+  build_image:
+    runs-on: ubuntu-20.04
+    strategy:
+        fail-fast: false
+    steps:
+    - name: tag
+      run: |
+        echo "tag=oras://ghcr.io/${{ github.repository }}/alphafold" >> $GITHUB_ENV 
+    - name: echo-tag
+      run: |
+        echo ' the apptainer tag is ' "${{ env.tag }}"
+    - name: Checkout source
+      uses: actions/checkout@v3
+      with:
+        clean: false
+    - name: build an apptainer container
+      run: |
+        pwd
+        ls -l
+        apptainer build --fakeroot alphafold.simg  Singularity.def
+    - name: builddate
+      id: build-date
+      run: |
+        echo "date=$(TZ=America/Los_Angeles date +%Y%m%d_%H%M%S)" >> $GITHUB_ENV
+    - name: push to ghcr.io
+      run: |
+        echo ${{ secrets.GITHUB_TOKEN }} | apptainer remote login -u ${{ github.actor }} --password-stdin oras://ghcr.io
+        pwd
+        ls -l
+        apptainer remote list
+        apptainer push alphafold.simg ${{ env.tag }}:${{ env.date }}
+        apptainer push alphafold.simg ${{ env.tag }}:latest
