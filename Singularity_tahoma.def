@@ -66,9 +66,9 @@ git clone --branch v3.3.0 https://github.com/soedinglab/hh-suite.git /tmp/hh-sui
 
 # Install Miniconda package manager.
 wget -q -P /tmp \
-https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh \
-&& bash /tmp/Miniconda3-latest-Linux-x86_64.sh -b -p /opt/conda \
-&& rm /tmp/Miniconda3-latest-Linux-x86_64.sh
+https://repo.anaconda.com/miniconda/Miniconda3-py37_4.12.0-Linux-x86_64.sh \
+&& bash /tmp/Miniconda3-py37_4.12.0-Linux-x86_64.sh -b -p /opt/conda \
+&& rm /tmp/Miniconda3-py37_4.12.0-Linux-x86_64.sh
 
 # Install conda packages.
 PATH="/opt/conda/bin:$PATH"
@@ -79,15 +79,17 @@ cudatoolkit==${CUDA_VERSION} \
 pdbfixer \
 pip \
 python=3.7 \
-&& conda clean --all --force-pkgs-dirs --yes
+&& conda clean --all --force-pkgs-dirs --yes \
+&& find /opt/conda/ -follow -type f -name '*.a' -delete \
+&& find /opt/conda/ -follow -type f -name '*.pyc' -delete \
+&& find /opt/conda/ -follow -type f -name '*.js.map' -delete \
+&& echo 'conda size' `du -sh /opt/conda `
+
 
 wget -q -P /app/alphafold/alphafold/common/ \
 https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt
 
 # Install pip packages.
-which python
-ls -lrt /opt/conda/bin/pip*
-ls -lrt /opt/conda/bin/py*
 python -m pip install --upgrade pip --no-cache-dir \
 && python -m pip install -r /app/alphafold/requirements.txt --no-cache-dir \
 && python -m pip  install --upgrade --no-cache-dir \
@@ -98,10 +100,6 @@ jaxlib==0.3.15+cuda11.cudnn805 \
 # Apply OpenMM patch.
 mkdir -p /opt/conda/lib/python3.7/site-packages
 cd /opt/conda/lib/python3.7/site-packages
-ls  -la  /app/alphafold/docker/
-ls  -l /app/alphafold/docker/openmm.patch
-ls -lrta
-head /app/alphafold/docker/openmm.patch
 patch -p0 < /app/alphafold/docker/openmm.patch
 
 # size
