@@ -57,4 +57,6 @@ jobs:
         pwd
         ls -la
         apptainer pull -F ${{ env.tag }}:${{ env.date }}
+        apptainer ${{ env.tag }}:${{ env.date }} python /app/alphafold/run_alphafold.py --help || true
+        echo 'exit code ' $?
         apptainer cache list -v
