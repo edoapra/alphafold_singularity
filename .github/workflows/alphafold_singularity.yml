@@ -24,6 +24,16 @@ jobs:
       uses: actions/checkout@v3
       with:
         clean: false
+    - name: Install apptainer
+      env:
+        APP_VER: 1.1.2
+      run: |
+        sudo apt-get install -y  libfuse2 libseccomp2 zlib1g uidmap squashfs-tools squashfuse fuse2fs fuse-overlayfs fakeroot
+        wget -q  https://github.com/apptainer/apptainer/releases/download/v${APP_VER}/apptainer_${APP_VER}_amd64.deb 
+        sudo dpkg -i apptainer_${APP_VER}_amd64.deb
+        rm apptainer_${APP_VER}_amd64.deb
+        which apptainer
+        apptainer version
     - name: build an apptainer container
       run: |
         pwd
