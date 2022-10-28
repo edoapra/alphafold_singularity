@@ -82,6 +82,8 @@ jaxlib==0.3.15+cuda11.cudnn805 \
 && mkdir -p /opt/conda/lib/python3.7/site-packages  \
 &&  cd /opt/conda/lib/python3.7/site-packages  \
 && patch -p0 < /app/alphafold/docker/openmm.patch  \
+&& apt-get -y purge cmake build-essential \
+&& apt-get -y install libgcc-s1  \
 && apt-get -y autoremove && apt-get clean \
 && echo '/opt/conda size' `du -sh /opt/conda` \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100  \
