@@ -66,6 +66,6 @@ jobs:
         apptainer exec ${{ env.tag }}:${{ env.date }} ldd /usr/bin/hhsearch 
         apptainer exec ${{ env.tag }}:${{ env.date }} /usr/bin/hhsearch -v || true
         apptainer exec ${{ env.tag }}:${{ env.date }} ptxas -V || true
-        ALPHAFOLD_DIR=`pwd` python ./run_singularity.py --help 
+        ALPHAFOLD_DIR=`pwd` python ./run_singularity.py --help  || true
         echo 'exit code ' $?
         apptainer cache list -v
