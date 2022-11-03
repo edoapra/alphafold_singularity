@@ -20,12 +20,12 @@ export https_proxy=http://proxy.emsl.pnl.gov:3128
 rm -rf alphafold
 wget -q https://github.com/deepmind/alphafold/tarball/main -O - | tar -xz
 ln -sf deepmind-alphafold-??????? alphafold
-export DOWNLOAD_DIR=/tahoma/datasets/alphafold_2022_10
+export DOWNLOAD_DIR=/tahoma/datasets/alphafold
 #export DOWNLOAD_DIR=/tahoma/edo/alphafold_dir
 export ALPHAFOLD_DIR=`pwd`/alphafold
 singularity pull -F --name $ALPHAFOLD_DIR/alphafold.sif   oras://ghcr.io/edoapra/alphafold_singularity/alphafold:latest
 ls -lrt $ALPHAFOLD_DIR/alphafold.sif
-export MODFILES_DIR=~/tahoma/alphafold_new
+export MODFILES_DIR=$org_dir
 mkdir -p /tmp/alphafold
 export TMPDIR=/tmp/alphafold
 python -m pip install --upgrade pip
