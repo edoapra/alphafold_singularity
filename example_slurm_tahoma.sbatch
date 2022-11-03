@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH -t 0:59:00
 #SBATCH -N 1
-#SBATCH -A msccons
+#SBATCH -A XXXXXXX
 #SBATCH -p analysis 
 #SBATCH -o alpha1.output.%j
 #SBATCH -e alpha1.output.%j
