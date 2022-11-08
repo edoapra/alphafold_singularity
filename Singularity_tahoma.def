@@ -103,6 +103,10 @@ libcusparse-${CUDA_V1}-${CUDA_V2} libnpp-${CUDA_V1}-${CUDA_V2} libnccl2 \
 # write a shell script to wrap them up.
 mkdir -p /app/alphafold
 cd /app/alphafold
+#patch to set the env variables ALPHAFOLD_HHBLITS_N_CPU (default:4) and  ALPHAFOLD_JACKHMMER_N_CPU (default:8)
+# https://github.com/deepmind/alphafold/issues/110
+wget https://raw.githubusercontent.com/easybuilders/easybuild-easyconfigs/92d2265fe8b84562e03705c872a97a4823ee25ba/easybuild/easyconfigs/a/AlphaFold/AlphaFold-2.0.0_n-cpu.patch
+patch -p1 < AlphaFold-2.0.0_n-cpu.patch
 echo '#!/bin/bash\n\
 #ldconfig\n\
 python /app/alphafold/run_alphafold.py "$@"' > /app/run_alphafold.sh \
