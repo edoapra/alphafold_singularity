@@ -16,10 +16,10 @@ jobs:
     steps:
     - name: tag
       run: |
-        if [[ ${{ matrix.branch }} ==  main ]]; then
+        if [[ ${{ github.ref_name }} ==  main ]]; then
         echo "tag=oras://ghcr.io/${{ github.repository }}/alphafold" >> $GITHUB_ENV
         else
-        echo "tag=oras://ghcr.io/${{ github.repository }}/alphafold_${{ matrix.branch }}" >> $GITHUB_ENV
+        echo "tag=oras://ghcr.io/${{ github.repository }}/alphafold_${{ github.ref_name }}" >> $GITHUB_ENV
         fi
     - name: echo-tag
       run: |
