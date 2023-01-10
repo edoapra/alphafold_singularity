@@ -16,7 +16,11 @@ jobs:
     steps:
     - name: tag
       run: |
-        echo "tag=oras://ghcr.io/${{ github.repository }}/alphafold" >> $GITHUB_ENV 
+        if [[ ${{ matrix.branch }} ==  main ]]; then
+        echo "tag=oras://ghcr.io/${{ github.repository }}/alphafold" >> $GITHUB_ENV
+        else
+        echo "tag=oras://ghcr.io/${{ github.repository }}/alphafold_${{ matrix.branch }}" >> $GITHUB_ENV
+        fi
     - name: echo-tag
       run: |
         echo ' the apptainer tag is ' "${{ env.tag }}"
