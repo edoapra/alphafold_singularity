@@ -43,7 +43,8 @@ wget \
 # Get code base
 mkdir -p /app
 ls -Rla /app
-git clone https://github.com/deepmind/alphafold.git /app/alphafold
+wget -q https://github.com/deepmind/alphafold/tarball/v2.2.4 -O - | tar -xz --directory /app  
+ln  -sf /app/deepmind-alphafold-* /app/alphafold \
 # Set perms so normal users can run
 chmod a+rx /app/alphafold/run_alphafold.py
 
