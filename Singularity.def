@@ -24,6 +24,7 @@ Stage: spython-base
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
 CUDA=11.1.1
 SINGULARITY_CUDA=11.1.1
+PYTHON_VERSION=3.8
 # FROM directive resets ARGS, so we specify again (the value is retained if
 # previously set).
 
@@ -43,7 +44,7 @@ wget \
 # Get code base
 mkdir -p /app
 ls -Rla /app
-wget -q https://github.com/deepmind/alphafold/tarball/v2.2.4 -O - | tar -xz --directory /app  
+wget -q https://github.com/deepmind/alphafold/tarball/v2.3.0 -O - | tar -xz --directory /app  
 ln  -sf /app/deepmind-alphafold-* /app/alphafold \
 # Set perms so normal users can run
 chmod a+rx /app/alphafold/run_alphafold.py
@@ -73,7 +74,7 @@ openmm=7.5.1 \
 cudatoolkit==${CUDA_VERSION} \
 pdbfixer \
 pip \
-python=3.7 \
+python=${PYTHON_VERSION} \
 && conda clean --all --force-pkgs-dirs --yes
 
 wget -q -P /app/alphafold/alphafold/common/ \
@@ -88,8 +89,8 @@ jaxlib==0.3.15+cuda11.cudnn805 \
 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html
 
 # Apply OpenMM patch.
-mkdir -p /opt/conda/lib/python3.7/site-packages
-cd /opt/conda/lib/python3.7/site-packages
+mkdir -p /opt/conda/lib/python${PYTHON_VERSION}/site-packages
+cd /opt/conda/lib/python${PYTHON_VERSION}/site-packages
 patch -p0 < /app/alphafold/docker/openmm.patch
 
 # size
