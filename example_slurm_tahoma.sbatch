@@ -8,7 +8,7 @@
 #SBATCH -J a1
 source /etc/profile.d/modules.sh
 module load gcc
-export PATH=/tahoma/emsla60288/edo/py3714/bin/:$PATH
+export PATH=/tahoma/emsla60288/edo/py3816/bin/:$PATH
 org_dir=`pwd`
 cd /big_scratch
 if [ -d  "venv" ]; then
@@ -22,7 +22,8 @@ rm -rf alphafold
 wget -q https://github.com/deepmind/alphafold/tarball/main -O - | tar -xz
 ln -sf deepmind-alphafold-??????? alphafold
 #export DOWNLOAD_DIR=/tahoma/datasets/alphafold
-export DOWNLOAD_DIR=/tahoma/emsla60288/edo/alphafold_dir
+#export DOWNLOAD_DIR=/tahoma/emsla60288/edo/alphafold_dir
+export DOWNLOAD_DIR=/tahoma/edo/alphafold_dir
 export ALPHAFOLD_DIR=`pwd`/alphafold
 singularity pull -F --name $ALPHAFOLD_DIR/alphafold.sif   oras://ghcr.io/edoapra/alphafold_singularity/alphafold_v230:latest
 ls -lrt $ALPHAFOLD_DIR/alphafold.sif
@@ -32,9 +33,10 @@ export TMPDIR=/tmp/alphafold
 python -m pip install --upgrade pip
 python -m pip install absl-py spython
 python -m pip install numpy --upgrade
-cp $MODFILES_DIR/* .
+cp $MODFILES_DIR/run_singularity.py .
+cp  $MODFILES_DIR/benchmark_24aas.fasta .
 ls -lrt
-/usr/bin/time -p python ./run_singularity.py \
+/usr/bin/time -p python  ./run_singularity.py \
   --fasta_paths=benchmark_24aas.fasta \
   --max_template_date=2022-05-14 \
 --model_preset=monomer \
