@@ -1,5 +1,5 @@
 Bootstrap: docker
-From: nvidia/cuda:11.2.1-cudnn8-runtime-ubuntu18.04
+From: nvidia/cuda:11.2.2-cudnn8-runtime-ubuntu18.04
 Stage: spython-base
 
 #%files
@@ -21,12 +21,12 @@ Stage: spython-base
 %post
 #
 #https://sylabs.io/guides/3.6/user-guide/mpi.html
-CUDA=11.2.1
-CUDA_VERSION=11.2.1
-SINGULARITY_CUDA=11.2.1
+CUDA=11.2.2
+CUDA_VERSION=11.2.2
+SINGULARITY_CUDA=11.2.2
 CUDA_V1=11
 CUDA_V2=2
-CUDA_V3=1
+CUDA_V3=2
 # FROM directive resets ARGS, so we specify again (the value is retained if
 # previously set).
 
@@ -80,7 +80,7 @@ https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c49412
 && python -m pip install -r /app/alphafold/requirements.txt --no-cache-dir \
 && python -m pip  install --upgrade --no-cache-dir \
 jax==0.4.14 \
-jaxlib==0.4.14+cuda11.cudnn82 \
+jaxlib==0.4.14+cuda11.cudnn86 \
 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  \
 && mkdir -p /opt/conda/lib/python3.8/site-packages  \
 &&  cd /opt/conda/lib/python3.8/site-packages  \
