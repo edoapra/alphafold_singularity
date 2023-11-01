@@ -45,7 +45,7 @@ wget \
 && apt-get clean \
 && mkdir -p /app  \
 && rm -rf /app/alphafold \
-&& wget -q https://github.com/deepmind/alphafold/tarball/v2.3.1 -O - | tar -xz --directory /app  \
+&& wget -q https://github.com/deepmind/alphafold/tarball/v2.3.2 -O - | tar -xz --directory /app  \
 && ln  -sf /app/deepmind-alphafold-* /app/alphafold \
 && chmod a+rx /app/alphafold/run_alphafold.py \
 && rm -rf /tmp/hh-suite  \
@@ -79,8 +79,8 @@ https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c49412
 && python -m pip install --upgrade pip --no-cache-dir \
 && python -m pip install -r /app/alphafold/requirements.txt --no-cache-dir \
 && python -m pip  install --upgrade --no-cache-dir \
-jax==0.3.25 \
-jaxlib==0.3.25+cuda11.cudnn82 \
+jax==0.4.14 \
+jaxlib==0.4.14+cuda11.cudnn82 \
 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  \
 && mkdir -p /opt/conda/lib/python3.8/site-packages  \
 &&  cd /opt/conda/lib/python3.8/site-packages  \
