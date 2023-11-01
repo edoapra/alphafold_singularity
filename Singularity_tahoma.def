@@ -45,7 +45,7 @@ wget \
 && apt-get clean \
 && mkdir -p /app  \
 && rm -rf /app/alphafold \
-&& wget -q https://github.com/deepmind/alphafold/tarball/v2.3.2 -O - | tar -xz --directory /app  \
+&& wget -q https://github.com/deepmind/alphafold/tarball/main -O - | tar -xz --directory /app  \
 && ln  -sf /app/google-deepmind-alphafold-* /app/alphafold \
 && chmod a+rx /app/alphafold/run_alphafold.py \
 && rm -rf /tmp/hh-suite  \
@@ -59,12 +59,12 @@ wget \
 && rm -rf /tmp/hh-suite \
 && cd /tmp  \
 && wget -q -P /tmp \
-https://repo.anaconda.com/miniconda/Miniconda3-py39_23.9.0-0-Linux-x86_64.sh \
-&& bash /tmp/Miniconda3-py39_23.9.0-0-Linux-x86_64.sh -b -p /opt/conda \
-&& rm /tmp/Miniconda3-py39_23.9.0-0-Linux-x86_64.sh \
+https://repo.anaconda.com/miniconda/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh \
+&& bash /tmp/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh -b -p /opt/conda \
+&& rm /tmp/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh \
 && export PATH="/opt/conda/bin:$PATH" \
 && conda install -y -c conda-forge \
-openmm=7.5.1 \
+openmm=7.7.0 \
 cudatoolkit==${CUDA_VERSION} \
 pdbfixer \
 pip \
@@ -75,12 +75,9 @@ https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c49412
 && python -m pip install --upgrade pip --no-cache-dir \
 && python -m pip install -r /app/alphafold/requirements.txt --no-cache-dir \
 && python -m pip  install --upgrade --no-cache-dir \
-jax==0.3.25 \
-jaxlib==0.3.25+cuda11.cudnn82 \
+jax==0.4.14 \
+jaxlib==0.4.14+cuda11.cudnn86 \
 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  \
-&& mkdir -p /opt/conda/lib/python3.9/site-packages  \
-&&  cd /opt/conda/lib/python3.9/site-packages  \
-&& patch -p0 < /app/alphafold/docker/openmm.patch  \
 && echo '/opt/conda size' `du -sh /opt/conda` \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100  \
 && chmod u+s /sbin/ldconfig.real
