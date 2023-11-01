@@ -59,12 +59,12 @@ wget \
 && rm -rf /tmp/hh-suite \
 && cd /tmp  \
 && wget -q -P /tmp \
-https://repo.anaconda.com/miniconda/Miniconda3-py38_23.9.0-0-Linux-x86_64.sh \
-&& bash /tmp/Miniconda3-py38_23.9.0-0-Linux-x86_64.sh -b -p /opt/conda \
-&& rm /tmp/Miniconda3-py38_23.9.0-0-Linux-x86_64.sh \
+https://repo.anaconda.com/miniconda/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh \
+&& bash /tmp/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh -b -p /opt/conda \
+&& rm /tmp/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh \
 && export PATH="/opt/conda/bin:$PATH" \
 && conda install -y -c conda-forge \
-openmm=7.5.1 \
+openmm=8.0.0 \
 cudatoolkit==${CUDA_VERSION} \
 pdbfixer \
 pip \
@@ -80,16 +80,6 @@ https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c49412
 jax==0.4.14 \
 jaxlib==0.4.14+cuda11.cudnn86 \
 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  \
-&& mkdir -p /opt/conda/lib/python3.8/site-packages  \
-&&  cd /opt/conda/lib/python3.8/site-packages  \
-&& patch -p0 < /app/alphafold/docker/openmm.patch  \
-&& apt-get -y --allow-change-held-packages purge cmake build-essential cuda-command-line-tools-${CUDA_V1}-${CUDA_V2}  \
-libcudnn8  libcublas-${CUDA_V1}-${CUDA_V2} libcufft-${CUDA_V1}-${CUDA_V2}  \
-libcusparse-${CUDA_V1}-${CUDA_V2} libnpp-${CUDA_V1}-${CUDA_V2} libnccl2 \
-&& apt-get -y  autoremove\
-&& apt update \
-&& apt-get -y install libgomp1:amd64 libcusolver-${CUDA_V1}-${CUDA_V2} cuda-nvcc-${CUDA_V1}-${CUDA_V2}  \
-&& apt-get clean \
 && echo '/opt/conda size' `du -sh /opt/conda` \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100  \
 && chmod u+s /sbin/ldconfig.real
