@@ -59,9 +59,9 @@ wget \
 && rm -rf /tmp/hh-suite \
 && cd /tmp  \
 && wget -q -P /tmp \
-https://repo.anaconda.com/miniconda/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh \
-&& bash /tmp/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh -b -p /opt/conda \
-&& rm /tmp/Miniconda3-py310_23.9.0-0-Linux-x86_64.sh \
+https://repo.anaconda.com/miniconda/Miniconda3-py39_23.9.0-0-Linux-x86_64.sh \
+&& bash /tmp/Miniconda3-py39_23.9.0-0-Linux-x86_64.sh -b -p /opt/conda \
+&& rm /tmp/Miniconda3-py39_23.9.0-0-Linux-x86_64.sh \
 && export PATH="/opt/conda/bin:$PATH" \
 && conda install -y -c conda-forge \
 openmm=8.0.0 \
@@ -77,8 +77,8 @@ https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c49412
 && python -m pip install --upgrade pip --no-cache-dir \
 && python -m pip install -r /app/alphafold/requirements.txt --no-cache-dir \
 && python -m pip  install --upgrade --no-cache-dir \
-jax==0.4.14 \
-jaxlib==0.4.14+cuda11.cudnn86 \
+jax==0.3.25 \
+jaxlib==0.3.25+cuda11.cudnn82 \
 -f https://storage.googleapis.com/jax-releases/jax_cuda_releases.html  \
 && echo '/opt/conda size' `du -sh /opt/conda` \
 && dpkg-query -Wf '${Installed-Size}\t${Package}\n' | sort -n | tail -n 100  \
