@@ -46,7 +46,7 @@ wget \
 && mkdir -p /app  \
 && rm -rf /app/alphafold \
 && wget -q https://github.com/deepmind/alphafold/tarball/v2.3.2 -O - | tar -xz --directory /app  \
-&& ln  -sf /app/deepmind-alphafold-* /app/alphafold \
+&& ln  -sf /app/google-deepmind-alphafold-* /app/alphafold \
 && chmod a+rx /app/alphafold/run_alphafold.py \
 && rm -rf /tmp/hh-suite  \
 && wget -q https://github.com/soedinglab/hh-suite/tarball/master  -O - | tar -xz --directory /tmp \
