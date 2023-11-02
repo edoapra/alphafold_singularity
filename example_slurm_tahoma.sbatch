@@ -1,35 +1,40 @@
 #!/bin/bash
 #SBATCH -t 0:59:00
 #SBATCH -N 1
-#SBATCH -A XXXXXXX
+#SBATCH -A XXXXXX
 #SBATCH -p analysis 
 #SBATCH -o alpha1.output.%j
 #SBATCH -e alpha1.output.%j
 #SBATCH -J a1
 source /etc/profile.d/modules.sh
+module purge
 module load python
+module load gcc
+export APPTAINER_CACHEDIR=/tahoma/emsla60288/edo/scratch
 org_dir=`pwd`
 cd /big_scratch
 if [ -d  "venv" ]; then
     echo "venv directory present"
 else
-    python -m venv venv
+    python3 -m venv venv
 fi
 source venv/bin/activate
 export https_proxy=http://proxy.emsl.pnl.gov:3128
 rm -rf alphafold
-wget -q https://github.com/deepmind/alphafold/tarball/main -O - | tar -xz
-ln -sf deepmind-alphafold-??????? alphafold
-export DOWNLOAD_DIR=/tahoma/datasets/alphafold
-#export DOWNLOAD_DIR=/tahoma/edo/alphafold_dir
+#wget -q https://github.com/deepmind/alphafold/tarball/v2.2.4 -O - | tar -xz
+wget -q https://github.com/deepmind/alphafold/tarball/v2.3.0 -O - | tar -xz
+ln -sf google-deepmind-alphafold-??????? alphafold
+#export DOWNLOAD_DIR=/tahoma/datasets/alphafold
+#needed for uniref30
+export DOWNLOAD_DIR=/tahoma/datasets/alphafold-20230322/
 export ALPHAFOLD_DIR=`pwd`/alphafold
+mkdir -p $ALPHAFOLD_DIR
 singularity pull -F --name $ALPHAFOLD_DIR/alphafold.sif   oras://ghcr.io/edoapra/alphafold_singularity/alphafold:latest
-ls -lrt $ALPHAFOLD_DIR/alphafold.sif
 export MODFILES_DIR=$org_dir
 mkdir -p /tmp/alphafold
 export TMPDIR=/tmp/alphafold
-python -m pip install --upgrade pip
-python -m pip install absl-py spython
+python3 -m pip install --upgrade pip
+python3 -m pip install absl-py spython
 cp $MODFILES_DIR/* .
 ls -lrt
 /usr/bin/time -p python ./run_singularity.py \
