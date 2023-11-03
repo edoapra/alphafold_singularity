@@ -26,7 +26,7 @@ wget -q https://github.com/deepmind/alphafold/tarball/v2.3.0 -O - | tar -xz
 ln -sf google-deepmind-alphafold-??????? alphafold
 #export DOWNLOAD_DIR=/tahoma/datasets/alphafold
 #needed for uniref30
-export DOWNLOAD_DIR=/tahoma/datasets/alphafold-20230322/
+export DOWNLOAD_DIR=/tahoma/datasets/alphafold-20230208
 export ALPHAFOLD_DIR=`pwd`/alphafold
 mkdir -p $ALPHAFOLD_DIR
 singularity pull -F --name $ALPHAFOLD_DIR/alphafold.sif   oras://ghcr.io/edoapra/alphafold_singularity/alphafold:latest
